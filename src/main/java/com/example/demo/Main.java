@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import static com.example.demo.SudokuBoardGenerator.generateBoard;
+import static com.example.demo.SudokuBoardGenerator.removeDigits;
+
 public class Main {
     public static void main(String[] args) {
         int[][] grid = {
@@ -45,5 +48,31 @@ public class Main {
 
         Sudoku.displayGrid(grid);
 
+        //Generate a new sudoku board
+        int[][] board = generateBoard();
+
+        //Remove digits to create a new puzzle
+                // Easy - 20; Medium - 40; Hard - 60
+        removeDigits(board, 40);
+
+        //Print the new puzzle
+        System.out.println("\n\nHere is a new sudoku for you to solve!\n");
+        Sudoku.displayGrid(board);
+
+        //Check if new sudoku grid is valid
+        if(Sudoku.isValid(board)) {
+            System.out.println("\n\nThe grid is valid, so you should be able to solve it.");
+        } else {
+            System.out.println("\n\nThe grid is not valid, please generate a new one.");
+        }
+
+        //Solve the new sudoku
+        /*if(Sudoku.solveBoard(board)) {
+            System.out.println("\nOkay lazy, I've solved it for ya\n");
+        } else {
+            System.out.println("\nSudoku is unsolvable!\n");
+        }
+
+        Sudoku.displayGrid(board);*/
     }
 }

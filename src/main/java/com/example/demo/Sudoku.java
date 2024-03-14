@@ -25,7 +25,7 @@ public class Sudoku {
     }
 
     //Method to check if a certain number can be placed in a given cell
-    public static boolean canPlaceNumber(int[][] grid, int row, int col, int number) {
+    /*public static boolean canPlaceNumber(int[][] grid, int row, int col, int number) {
         //Check the row
         for(int i = 0; i < gridSize; i++) {
             if(grid[row][i] == number) {
@@ -51,6 +51,64 @@ public class Sudoku {
             }
         }
         return true;
+    }*/
+
+    public static boolean canPlaceNumber(int[][] grid, int row, int col, int number) {
+        final boolean[] canPlace = {true};
+
+        //Thread for row
+        Thread checkRow = new Thread(() -> {
+            //System.out.println("Row thread starting");
+            for (int i = 0; i < gridSize; i++) {
+                if (grid[row][i] == number) {
+                    canPlace[0] = false;
+                }
+            }
+            //System.out.println("Row thread completed");
+        });
+
+        //Thread for column
+        Thread checkColumn = new Thread(() -> {
+            //System.out.println("Column thread starting");
+            for (int i = 0; i < gridSize; i++) {
+                if (grid[i][col] == number) {
+                    canPlace[0] = false;
+                }
+            }
+            //System.out.println("Column thread completed");
+        });
+
+        //Thread for square
+        Thread checkSquare = new Thread(() -> {
+            //System.out.println("Square thread starting");
+            int startRow = row - row % 3;
+            int startCol = col - col % 3;
+            for (int r = startRow; r < startRow + 3; r++) {
+                for (int c = startCol; c < startCol + 3; c++) {
+                    if (grid[r][c] == number) {
+                        canPlace[0] = false;
+                    }
+                }
+            }
+            //System.out.println("Square thread completed");
+        });
+
+        //Start threads
+        checkRow.start();
+        checkColumn.start();
+        checkSquare.start();
+
+        //Wait for all to finish
+        try {
+            checkRow.join();
+            checkColumn.join();
+            checkSquare.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
+
+        return canPlace[0];
     }
 
     //Method to determine if the starting grid is valid
